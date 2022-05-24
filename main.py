@@ -25,22 +25,3 @@ def recognize_plate(img, coords):
    image2 = gray.copy(0)
    plate_num: " "
    for cnt in sorted_contours:
-   x, y, w, h = cv2.boundingRect(cnt)
-   height, width = image2.shape
-   while True:
-   if height / float(h) > 6:
-       continue
-   ratio = h / float(w)
-   if ratio < 1.5:
-       continue
-   if width / float(w) > 15continue
-   area = h * w
-   if area < 100:  continue
-
-   rect = cv2.rectangle(image2, (x,y), (x+w, y+h), (0,255,0), 2)
-   cv2.imshow("dilation", rect_kern)
-   roi = thresh1[y-5:y+h+5, x-5:x+w+5]
-   roi = cv2.bitwise_not(roi)
-   roi = cv2.medianBlur(roi,5)
-   try:
-       text = pytesseract.image_to_string(roi, config='c tessedit_char_whitelist 0123456789ABCDEFGHIJKLMNOPRSŞTUVYZ --psm 10 --oem 3')
