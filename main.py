@@ -4,11 +4,11 @@ import os
 import numpy as np
 
 # If you don't have tesseract executable in your PATH, include the following:
-pytesseract.pytesseract.tesseract_cmd = r'<fC:\Program Files\Tesseract-OCR>'
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 # Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
 # point to license plate image (works well with custom crop function)
-gray = cv2.imread("turkije24.jpg", 0)
+gray = cv2.imread("bes.jpg", 0)
 gray = cv2.resize(gray, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
 blur = cv2.GaussianBlur(gray, (5, 5), 0)
 gray = cv2.medianBlur(gray, 3)
@@ -20,8 +20,8 @@ rect_kern = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 
 # apply dilation
 dilation = cv2.dilate(thresh, rect_kern, iterations=1)
-# cv2.imshow("dilation", dilation)
-# cv2.waitKey(0)
+cv2.imshow("dilation", dilation)
+cv2.waitKey(0)
 # find contours
 try:
     contours, hierarchy = cv2.findContours(dilation, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -42,10 +42,10 @@ for cnt in sorted_contours:
     if height / float(h) > 6: continue
     ratio = h / float(w)
     # if height to width ratio is less than 1.5 skip
-    if ratio < 1.5: continue
+    if ratio < 0.5: continue
     area = h * w
     # if width is not more than 25 pixels skip
-    if width / float(w) > 15: continue
+    if width / float(w) > 25: continue
     # if area is less than 100 pixels skip
     if area < 100: continue
     # draw the rectangle
@@ -56,7 +56,7 @@ for cnt in sorted_contours:
     # cv2.imshow("ROI", roi)
     # cv2.waitKey(0)
     text = pytesseract.image_to_string(roi,
-                                       config='-c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ --psm 8 --oem 3')
+                                       lang='tur', config='--psm 13 --oem 1')
     # print(text)
     plate_num += text
 print(plate_num)
